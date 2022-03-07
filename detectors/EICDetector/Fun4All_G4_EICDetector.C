@@ -262,10 +262,13 @@ int Fun4All_G4_EICDetector(
   //  Enable::VERBOSITY = 1;
 
   // whether to simulate the Be section of the beam pipe
-  /*Enable::PIPE = true;
+  Enable::PIPE = true;
+
   // If need to disable EIC beam pipe extension beyond the Be-section:
   G4PIPE::use_forward_pipes = true;
-  //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
+
+  /*
+   * //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
   Enable::HFARFWD_MAGNETS = true;
   Enable::HFARFWD_VIRTUAL_DETECTORS = true;
 
@@ -334,7 +337,7 @@ int Fun4All_G4_EICDetector(
   */
   // EICDetector geometry - barrel
   Enable::DIRC = true;
-  Enable::DIRC_RECO = Enable::DIRC && true;
+  // Enable::DIRC_RECO = Enable::DIRC && true;
 
   Enable::BMMG = false;
   // Enable::DIRC_VERBOSITY = 2;
