@@ -96,7 +96,7 @@ int Fun4All_G4_EICDetector(
   // Input::PYTHIA8 = true;
 
   // Use Pythia 6
-  // Input::PYTHIA6 = true;
+  Input::PYTHIA6 = true;
 
   // Use Sartre
   //   Input::SARTRE = true;
@@ -251,7 +251,7 @@ int Fun4All_G4_EICDetector(
   // Enable::DSTREADER = true;
 
   // turn the display on (default off)
-  //  Enable::DISPLAY = true;
+  //Enable::DISPLAY = true;
 
   //======================
   // What to run
@@ -262,7 +262,7 @@ int Fun4All_G4_EICDetector(
   //  Enable::VERBOSITY = 1;
 
   // whether to simulate the Be section of the beam pipe
-  Enable::PIPE = true;
+  /*Enable::PIPE = true;
   // If need to disable EIC beam pipe extension beyond the Be-section:
   G4PIPE::use_forward_pipes = true;
   //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
@@ -322,16 +322,16 @@ int Fun4All_G4_EICDetector(
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
   Enable::HCALIN_CLUSTER = Enable::HCALIN_TOWER && true;
   Enable::HCALIN_EVAL = Enable::HCALIN_CLUSTER && true;
+  */
+  //Enable::MAGNET = true;
 
-  Enable::MAGNET = true;
-
-  Enable::HCALOUT = true;
+  /*Enable::HCALOUT = true;
   //  Enable::HCALOUT_ABSORBER = true;
   Enable::HCALOUT_CELL = Enable::HCALOUT && true;
   Enable::HCALOUT_TOWER = Enable::HCALOUT_CELL && true;
   Enable::HCALOUT_CLUSTER = Enable::HCALOUT_TOWER && true;
   Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && true;
-
+  */
   // EICDetector geometry - barrel
   Enable::DIRC = true;
   Enable::DIRC_RECO = Enable::DIRC && true;
@@ -340,19 +340,19 @@ int Fun4All_G4_EICDetector(
   // Enable::DIRC_VERBOSITY = 2;
 
   // EICDetector geometry - 'hadron' direction
-  Enable::RICH = true;
-  Enable::RICH_RECO = Enable::RICH && true;
+  //Enable::RICH = true;
+  //Enable::RICH_RECO = Enable::RICH && true;
 
-  Enable::TRD = false;
-  Enable::TRD_GAS = false;
+  //Enable::TRD = false;
+  //Enable::TRD_GAS = false;
   // Enable::RICH_VERBOSITY = 2;
 
   // EICDetector geometry - 'electron' direction
-  Enable::mRICH = true;
-  Enable::mRICH_RECO = Enable::mRICH && true;
+  //Enable::mRICH = true;
+  //Enable::mRICH_RECO = Enable::mRICH && true;
   // Enable::mRICH_VERBOSITY = 2;
 
-  Enable::FEMC = true;
+  /*Enable::FEMC = true;
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER = Enable::FEMC && true;
   Enable::FEMC_CLUSTER = Enable::FEMC_TOWER && true;
@@ -394,7 +394,7 @@ int Fun4All_G4_EICDetector(
   // jet reconstruction
   Enable::FWDJETS = true;
   Enable::FWDJETS_EVAL = Enable::FWDJETS && false;
-
+  */
   // new settings using Enable namespace in GlobalVariables.C
   Enable::BLACKHOLE = true;
   //Enable::BLACKHOLE_SAVEHITS = false; // turn off saving of bh hits
@@ -444,8 +444,8 @@ int Fun4All_G4_EICDetector(
 
   //  const string magfield = "1.5"; // alternatively to specify a constant magnetic field, give a float number, which will be translated to solenoidal field in T, if string use as fieldmap name (including path)
   //  G4MAGNET::magfield = string(getenv("CALIBRATIONROOT")) + string("/Field/Map/sPHENIX.2d.root");  // default map from the calibration database
-  G4MAGNET::magfield_rescale = -1.4 / 1.5;  // make consistent with expected Babar field strength of 1.4T
-
+  //G4MAGNET::magfield_rescale = -1.4 / 1.5;  // make consistent with expected Babar field strength of 1.4T
+  G4MAGNET::magfield_rescale = 0.; 
   //---------------
   // Pythia Decayer
   //---------------
