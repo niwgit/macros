@@ -26,11 +26,11 @@ namespace Enable
   bool DIRC = false;
   bool DIRC_RECO = false;
   bool DIRC_OVERLAPCHECK = false;
-  int DIRC_VERBOSITY = 0;
+  int DIRC_VERBOSITY = 1;
   double DIRC_SCALE = 10; //DIRC class is in mm, ECCE is in cm
 
   // temp setting to disable DIRC photon simulation in production
-  bool DIRC_DISABLE_PHOTON_SIMULATION = true;
+  bool DIRC_DISABLE_PHOTON_SIMULATION = false;
 }  // namespace Enable
 
 void DIRCInit()
@@ -65,6 +65,7 @@ void DIRCSetup(PHG4Reco* g4Reco)
   dircSubsys->set_int_param("MCP_columns", 4);
   dircSubsys->set_int_param("NBoxes", 12); // number of bar boxes
   dircSubsys->set_int_param("Bar_pieces", 4); // pieces glued in one bar
+  dircSubsys->set_int_param("absorberactive", 1);
 
   if (Enable::DIRC_DISABLE_PHOTON_SIMULATION)
     dircSubsys->set_int_param("disable_photon_sim", 1);

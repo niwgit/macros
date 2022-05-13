@@ -17,6 +17,8 @@
 #include <fun4all/Fun4AllDstOutputManager.h>
 #include <fun4all/Fun4AllOutputManager.h>
 #include <fun4all/Fun4AllServer.h>
+#include <g4eicdirc/G4DIRCTree.h>
+#include <phpythia8/PHPy8ParticleTrigger.h>
 
 #include <phool/recoConsts.h>
 
@@ -36,7 +38,7 @@ int Fun4All_G4_EICDetector(
   // Fun4All server
   //---------------
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(1);
   //Opt to print all random seed used for debugging reproducibility. Comment out to reduce stdout prints.
   //PHRandomSeed::Verbosity(1);
 
@@ -46,7 +48,7 @@ int Fun4All_G4_EICDetector(
   // PHRandomSeed() which reads /dev/urandom to get its seed
   // if the RANDOMSEED flag is set its value is taken as initial seed
   // which will produce identical results so you can debug your code
-  // rc->set_IntFlag("RANDOMSEED", 12345);
+  rc->set_IntFlag("RANDOMSEED", 12345);
 
   bool generate_seed = false;
 
@@ -78,7 +80,7 @@ int Fun4All_G4_EICDetector(
   // about the number of layers used for the cell reco code
   //
   //Input::READHITS = true;
-  INPUTREADHITS::filename[0] = inputFile;
+  //INPUTREADHITS::filename[0] = inputFile;
   // if you use a filelist
   // INPUTREADHITS::listfile[0] = inputFile;
 
@@ -88,26 +90,26 @@ int Fun4All_G4_EICDetector(
   // all other options only play a role if it is active
   // In case embedding into a production output, please double check your G4Setup_EICDetector.C and G4_*.C consistent with those in the production macro folder
   //  Input::EMBED = true;
-  INPUTEMBED::filename[0] = embed_input_file;
+  //INPUTEMBED::filename[0] = embed_input_file;
   // if you use a filelist
   //INPUTEMBED::listfile[0] = embed_input_file;
 
   // Use Pythia 8
-  // Input::PYTHIA8 = true;
+  Input::PYTHIA8 = true;
 
   // Use Pythia 6
-  Input::PYTHIA6 = true;
+  //Input::PYTHIA6 = true;
 
   // Use Sartre
   //   Input::SARTRE = true;
 
   // Simple multi particle generator in eta/phi/pt ranges
-  Input::SIMPLE = true;
+  //Input::SIMPLE = true;
   // Input::SIMPLE_NUMBER = 2; // if you need 2 of them
-  // Input::SIMPLE_VERBOSITY = 1;
+  //Input::SIMPLE_VERBOSITY = 1;
 
   // Particle gun (same particles in always the same direction)
-  // Input::GUN = true;
+  //Input::GUN = true;
   // Input::GUN_NUMBER = 3; // if you need 3 of them
   // Input::GUN_VERBOSITY = 0;
 
@@ -141,24 +143,56 @@ int Fun4All_G4_EICDetector(
   // add the settings for other with [1], next with [2]...
   if (Input::SIMPLE)
   {
-    INPUTGENERATOR::SimpleEventGenerator[0]->add_particles("pi-", 5);
+    INPUTGENERATOR::SimpleEventGenerator[0]->add_particles("pi+", 1);
     if (Input::HEPMC || Input::EMBED)
     {
       INPUTGENERATOR::SimpleEventGenerator[0]->set_reuse_existing_vertex(true);
-      INPUTGENERATOR::SimpleEventGenerator[0]->set_existing_vertex_offset_vector(0.0, 0.0, 0.0);
+      INPUTGENERATOR::SimpleEventGenerator[0]->set_existing_vertex_offset_vector(0.0, 0.0, 0.0);   
     }
     else
     {
       INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
                                                                                 PHG4SimpleEventGenerator::Uniform,
                                                                                 PHG4SimpleEventGenerator::Uniform);
-      INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_mean(0., 0., 0.);
-      INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_width(0., 0., 5.);
+      INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_mean(0., 1.75, 0.);
+      //INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_width(0., 0., 5.);
+      INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_width(0., 0., 0.);
     }
-    INPUTGENERATOR::SimpleEventGenerator[0]->set_eta_range(-3, 3);
+    INPUTGENERATOR::SimpleEventGenerator[0]->set_eta_range(-1, 1);
     INPUTGENERATOR::SimpleEventGenerator[0]->set_phi_range(-M_PI, M_PI);
-    INPUTGENERATOR::SimpleEventGenerator[0]->set_pt_range(0.1, 20.);
+    INPUTGENERATOR::SimpleEventGenerator[0]->set_p_range(5, 20.);
+    //INPUTGENERATOR::SimpleEventGenerator[0]->set_eta_range(1.317, 1.317);                                                          //INPUTGENERATOR::SimpleEventGenerator[0]->set_phi_range(0, 0);
+    //INPUTGENERATOR::SimpleEventGenerator[0]->set_pt_range(6.0, 6.0); 
   }
+
+  /*if (Input::SIMPLE)
+    {
+      INPUTGENERATOR::SimpleEventGenerator[0]->add_particles("opticalphoton", 1);
+
+      if (Input::HEPMC || Input::EMBED)
+	{
+	  INPUTGENERATOR::SimpleEventGenerator[0]->set_reuse_existing_vertex(true);
+	  INPUTGENERATOR::SimpleEventGenerator[0]->set_existing_vertex_offset_vector(0.0, 0.0, 0.0);
+	}
+      else
+	{
+	  INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
+										    PHG4SimpleEventGenerator::Uniform,
+										    PHG4SimpleEventGenerator::Uniform);
+      
+	  INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_mean(72.96, 1.75, -255.44);                          
+	  INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_width(0., 0., 0.);
+	}
+  
+      INPUTGENERATOR::SimpleEventGenerator[0]->set_theta_range(90.0*(TMath::Pi()/180.), 270.0*(TMath::Pi()/180.));
+      //INPUTGENERATOR::SimpleEventGenerator[0]->set_theta_range(200.0*(TMath::Pi()/180.), 200.0*(TMath::Pi()/180.));
+      //INPUTGENERATOR::SimpleEventGenerator[0]->set_theta_range(160.0*(TMath::Pi()/180.), 160.0*(TMath::Pi()/180.)); 
+      INPUTGENERATOR::SimpleEventGenerator[0]->set_phi_range(-M_PI, M_PI);
+      INPUTGENERATOR::SimpleEventGenerator[0]->set_p_range(3.18e-09, 3.18e-09, 0.);
+      //INPUTGENERATOR::SimpleEventGenerator[0]->set_pt_range(3.18e-09, 3.18e-09);
+      }*/
+
+
   // Upsilons
   // if you run more than one of these Input::UPSILON_NUMBER > 1
   // add the settings for other with [1], next with [2]...
@@ -180,22 +214,34 @@ int Fun4All_G4_EICDetector(
   // add the settings for other with [1], next with [2]...
   if (Input::GUN)
   {
-    INPUTGENERATOR::Gun[0]->AddParticle("pi-", 0, 1, 0);
-    INPUTGENERATOR::Gun[0]->set_vtx(0, 0, 0);
-  }
-  // pythia6
-  if (Input::PYTHIA6)
-  {
-    INPUTGENERATOR::Pythia6->set_config_file(string(getenv("CALIBRATIONROOT")) + "/Generators/phpythia6_ep.cfg");
-    //! apply EIC beam parameter following EIC CDR
-    Input::ApplyEICBeamParameter(INPUTGENERATOR::Pythia6);
+    INPUTGENERATOR::Gun[0]->AddParticle("pi+", 6.0, 0, 0);
+    INPUTGENERATOR::Gun[0]->set_vtx(0, 1.75, 0);
   }
   // pythia8
   if (Input::PYTHIA8)
+    {
+      //INPUTGENERATOR::Pythia8->set_config_file(string(getenv("CALIBRATIONROOT")) + "/Generators/phpythia6_ep.cfg");
+      INPUTGENERATOR::Pythia8->set_config_file("phpythia8.cfg");
+      // trigger on higher momentum particle: 
+      PHPy8ParticleTrigger * trig = new PHPy8ParticleTrigger();
+      trig -> AddParticles(211);
+      trig -> AddParticles(-211);
+      trig -> AddParticles(321);
+      trig -> AddParticles(-321);
+      trig -> SetPHighLow  (200, 5);
+      trig ->SetEtaHighLow (1, -1); 
+      INPUTGENERATOR::Pythia8->register_trigger(trig);
+      
+      //! apply EIC beam parameter following EIC CDR
+      Input::ApplyEICBeamParameter(INPUTGENERATOR::Pythia8);
+    }
+
+  // pythia8
+  /*if (Input::PYTHIA8)
   {
     //! apply EIC beam parameter following EIC CDR
     Input::ApplyEICBeamParameter(INPUTGENERATOR::Pythia8);
-  }
+    }*/
   // Sartre
   if (Input::SARTRE)
   {
@@ -267,9 +313,9 @@ int Fun4All_G4_EICDetector(
   // If need to disable EIC beam pipe extension beyond the Be-section:
   G4PIPE::use_forward_pipes = true;
 
-  /*
-   * //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
-  Enable::HFARFWD_MAGNETS = true;
+  
+  //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
+  /*Enable::HFARFWD_MAGNETS = true;
   Enable::HFARFWD_VIRTUAL_DETECTORS = true;
 
   Enable::HFARBWD_MAGNETS = true;
@@ -278,7 +324,7 @@ int Fun4All_G4_EICDetector(
   // gems
   Enable::EGEM = true;
   Enable::FGEM = true; // deactivated as it's replaced by a FTTL layer
-  // Enable::BGEM = true; // not yet defined in this model
+  */ // Enable::BGEM = true; // not yet defined in this model
   Enable::RWELL = true;
   // barrel tracker
   Enable::TrackingService = true;
@@ -303,7 +349,7 @@ int Fun4All_G4_EICDetector(
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
   G4TRACKING::DISPLACED_VERTEX = true;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
                                         // projections to calorimeters
-  G4TRACKING::PROJECTION_EEMC = true;
+  /*G4TRACKING::PROJECTION_EEMC = true;
   G4TRACKING::PROJECTION_BECAL = true;
   G4TRACKING::PROJECTION_EHCAL = true;
   G4TRACKING::PROJECTION_CEMC = true;
@@ -619,6 +665,11 @@ int Fun4All_G4_EICDetector(
     if (Enable::DSTOUT_COMPRESS) DstCompress(out);
     se->registerOutputManager(out);
   }
+
+  G4DIRCTree *dirc_tree = new G4DIRCTree();
+  dirc_tree->AddNode("hpDIRC",0);
+  dirc_tree->AddNode("ABSORBER_hpDIRC",0);
+  se->registerSubsystem(dirc_tree);
 
   //-----------------
   // Event processing
